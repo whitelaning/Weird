@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.framework.android.view.ProgressLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mProgressLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <com.other.circlerefresh.CircleRefreshLayout
+        android:id="@+id/mRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:AniBackColor="#FF3F51B5"
+        app:AniForeColor="#ffffffff"
+        app:CircleSmaller="6">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/transparent"/>
+    </com.other.circlerefresh.CircleRefreshLayout>
+
+</com.framework.android.view.ProgressLayout>

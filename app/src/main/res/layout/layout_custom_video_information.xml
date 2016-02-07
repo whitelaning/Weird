@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/mVideoInforPathTitle"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:text="Path : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/mVideoInforPath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/mVideoInforPathTitle"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/mVideoInforSizeTitle"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mVideoInforPath"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:text="File size : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/mVideoInforSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mVideoInforPath"
+        android:layout_toRightOf="@+id/mVideoInforSizeTitle"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/mVideoInforResolutionTitle"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mVideoInforSize"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:text="Resolution : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/mVideoInforResolution"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mVideoInforSize"
+        android:layout_toRightOf="@+id/mVideoInforResolutionTitle"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/mVideoInforDurationTitle"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mVideoInforResolution"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:text="Duration : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/mVideoInforDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mVideoInforResolution"
+        android:layout_toRightOf="@+id/mVideoInforDurationTitle"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:textColor="@color/text_color_black" />
+
+</RelativeLayout>

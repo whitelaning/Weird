@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorPrimaryLight">#03A9F4</color>
+    <color name="colorRed">#FF4081</color>
+    <color name="colorRedDark">#ce3d3a</color>
+    <color name="colorRedLight">#FF80AB</color>
+    <color name="colorBlue">#3F51B5</color>
+    <color name="colorBlueDark">#303F9F</color>
+    <color name="colorBlueLight">#C5CAE9</color>
+
+    //----------------------------------------------------------------
+    <color name="text_color_white">#FFFFFF</color>
+    <color name="text_color_black">#000000</color>
+    <color name="text_color_default">#717171</color>
+    <color name="text_color_light_gray">#bdbdbd</color>
+    //----------------------------------------------------------------
+    <color name="black">#ff000000</color>
+    //----------------------------------------------------------------
+    <color name="black_0">#ff000000</color>
+    <color name="black_1">#11000000</color>
+    <color name="black_2">#22000000</color>
+    <color name="black_3">#33000000</color>
+    <color name="black_4">#44000000</color>
+    <color name="black_5">#55000000</color>
+    <color name="black_6">#66000000</color>
+    <color name="black_7">#77000000</color>
+    <color name="black_8">#88000000</color>
+    <color name="black_9">#99000000</color>
+    <color name="black_a">#aa000000</color>
+    <color name="black_b">#bb000000</color>
+    <color name="black_c">#cc000000</color>
+    <color name="black_d">#dd000000</color>
+    <color name="black_e">#ee000000</color>
+    <color name="black_f">#ff000000</color>
+    //----------------------------------------------------------------
+    <color name="bg_color_white">#FFFFFF</color>
+    <color name="bg_default">#f6f6f6</color>
+    //----------------------------------------------------------------
+    <color name="color_recycle_view_cell_normal">#FFFFFFFF</color>
+    <color name="color_recycle_view_cell_press">#3F51B5</color>
+    //----------------------------------------------------------------
+    <color name="line">#e8e8e8</color>
+    <color name="bg_list_default">#f2f4f5</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
+
+</resources>

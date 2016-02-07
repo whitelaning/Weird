@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="4dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="4dp">
+
+
+    <com.other.swipe.SwipeLayout
+        android:id="@+id/mSwipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="240px"
+        android:visibility="visible">
+        <!-- Bottom View Start-->
+        <LinearLayout
+            android:layout_width="240px"
+            android:layout_height="240px"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/mInformation"
+                android:layout_width="240px"
+                android:layout_height="120px"
+                android:background="#3f51b5"
+                android:gravity="center"
+                android:text="Information"
+                android:textColor="@color/text_color_white"
+                android:textSize="40px" />
+
+            <TextView
+                android:id="@+id/mDelete"
+                android:layout_width="240px"
+                android:layout_height="120px"
+                android:background="#F50057"
+                android:gravity="center"
+                android:text="Delete"
+                android:textColor="@color/text_color_white"
+                android:textSize="40px" />
+
+        </LinearLayout>
+        <!-- Bottom View End-->
+
+        <!-- Surface View Start -->
+        <LinearLayout
+            android:id="@+id/mSurface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="240px"
+                android:background="@color/bg_color_white">
+
+                <ImageView
+                    android:id="@+id/mThumbnail"
+                    android:layout_width="320px"
+                    android:layout_height="240px"
+                    android:layout_centerVertical="true"
+                    android:background="#3F51B5"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bg_video_default" />
+
+                <ImageView
+                    android:id="@+id/mArrow"
+                    android:layout_width="120px"
+                    android:layout_height="120px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:padding="30px"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_arrow_blue_left_20150107" />
+
+                <TextView
+                    android:id="@+id/mTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/mArrow"
+                    android:layout_toRightOf="@+id/mThumbnail"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:paddingLeft="8dp"
+                    android:text="Whitelaning's Video"
+                    android:textColor="@color/text_color_default"
+                    android:textSize="50px" />
+
+
+                <TextView
+                    android:id="@+id/mTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/mArrow"
+                    android:layout_toRightOf="@+id/mThumbnail"
+                    android:paddingLeft="8dp"
+                    android:text="00:00"
+                    android:textColor="@color/text_color_light_gray"
+                    android:textSize="40px" />
+
+            </RelativeLayout>
+        </LinearLayout>
+        <!-- Surface View End -->
+
+    </com.other.swipe.SwipeLayout>
+
+</RelativeLayout>

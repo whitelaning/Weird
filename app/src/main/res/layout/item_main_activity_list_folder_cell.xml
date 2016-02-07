@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="4dp"
+    android:paddingTop="4dp">
+
+    <RelativeLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="240px"
+        android:background="@color/bg_color_white"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/mThumbnail"
+            android:layout_width="160px"
+            android:layout_height="160px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20px"
+            android:background="@drawable/bg_circle_solid_blue"
+            android:padding="40px"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_movie_white" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60px"
+            android:layout_toLeftOf="@+id/mArrow"
+            android:layout_toRightOf="@+id/mThumbnail"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:paddingLeft="8dp"
+            android:text="Whitelaning's Folder"
+            android:textColor="@color/text_color_default"
+            android:textSize="50px" />
+
+
+        <TextView
+            android:id="@+id/number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60px"
+            android:layout_toLeftOf="@+id/mArrow"
+            android:layout_toRightOf="@+id/mThumbnail"
+            android:paddingLeft="8dp"
+            android:text="0 video"
+            android:textColor="@color/text_color_light_gray"
+            android:textSize="40px" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

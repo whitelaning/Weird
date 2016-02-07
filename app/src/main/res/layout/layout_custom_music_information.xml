@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:text="Singer : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/singer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/title1"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/singer"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Album : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/album"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/singer"
+        android:layout_toRightOf="@+id/title2"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/title3"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/album"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="File : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/fileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/album"
+        android:layout_toRightOf="@+id/title3"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/title4"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fileName"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Duration : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fileName"
+        android:layout_toRightOf="@+id/title4"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/title5"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/duration"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Path : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/path"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/duration"
+        android:layout_toRightOf="@+id/title5"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:text=""
+        android:textColor="@color/text_color_black" />
+
+    <TextView
+        android:id="@+id/title6"
+        android:layout_width="350px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/path"
+        android:gravity="center_vertical|right"
+        android:paddingBottom="4dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Size : "
+        android:textColor="@color/text_color_default" />
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/path"
+        android:layout_toRightOf="@+id/title6"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp"
+        android:paddingRight="16dp"
+        android:text=""
+        android:textColor="@color/text_color_black" />
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:layout_below="@+id/size"
+        android:layout_marginTop="10px"
+        android:background="@color/colorRedDark"
+        android:text="Delete"
+        android:textColor="@color/text_color_white"
+        android:textSize="50px"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

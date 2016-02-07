@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.framework.android.view.ProgressLayout
+        android:id="@+id/mProgressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.other.pagerslidingtabstrip.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="120px"
+            android:background="@color/white" />
+
+        <RelativeLayout
+            android:id="@+id/playControlRootLayout"
+            android:layout_width="match_parent"
+            android:layout_height="160px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/songAlbum"
+                android:layout_width="160px"
+                android:layout_height="160px"
+                android:padding="20px"
+                android:src="@drawable/placeholder_disk_play_program" />
+
+            <ImageView
+                android:id="@+id/songNext"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="10px"
+                android:src="@drawable/playbar_btn_next" />
+
+            <ImageView
+                android:id="@+id/songPlay"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/songNext"
+                android:padding="10px"
+                android:src="@drawable/playbar_btn_play" />
+
+            <ImageView
+                android:id="@+id/songList"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/songPlay"
+                android:padding="10px"
+                android:src="@drawable/playbar_btn_playlist"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/songName"
+                android:layout_width="match_parent"
+                android:layout_height="60px"
+                android:layout_marginLeft="160px"
+                android:layout_marginTop="20px"
+                android:layout_toLeftOf="@+id/songList"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/text_color_black"
+                android:textSize="38px" />
+
+            <TextView
+                android:id="@+id/singerName"
+                android:layout_width="match_parent"
+                android:layout_height="45px"
+                android:layout_below="@+id/songName"
+                android:layout_marginLeft="160px"
+                android:layout_toLeftOf="@+id/songList"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/text_color_default"
+                android:textSize="35px" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/line1"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_above="@+id/playControlRootLayout"
+            android:background="@color/bg_list_default" />
+
+        <com.framework.android.view.ViewPagerRelativeLayout
+            android:id="@+id/viewPagerRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/line1"
+            android:layout_below="@+id/tabs">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_list_default">
+
+            </android.support.v4.view.ViewPager>
+
+        </com.framework.android.view.ViewPagerRelativeLayout>
+
+    </com.framework.android.view.ProgressLayout>
+
+</RelativeLayout>

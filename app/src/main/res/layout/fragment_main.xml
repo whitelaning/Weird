@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#dfdede"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layoutTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/playType"
+            android:layout_width="135px"
+            android:layout_height="186px"
+            android:src="@drawable/btn_playing_cycle_off" />
+
+        <ImageView
+            android:id="@+id/playAlbum"
+            android:layout_width="260px"
+            android:layout_height="260px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="410px"
+            android:src="@drawable/playing_album" />
+
+        <ImageView
+            android:layout_width="720px"
+            android:layout_height="720px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="180px"
+            android:src="@drawable/playing_lp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="180px"
+            android:layout_marginTop="220px"
+            android:gravity="right">
+
+            <ImageView
+                android:layout_width="147px"
+                android:layout_height="620px"
+                android:src="@drawable/playing_stylus_lp_bg" />
+
+            <ImageView
+                android:id="@+id/playNeedleShadow"
+                android:layout_width="147px"
+                android:layout_height="620px"
+                android:src="@drawable/needle_shadow2" />
+
+            <ImageView
+                android:id="@+id/playNeedle"
+                android:layout_width="147px"
+                android:layout_height="620px"
+                android:src="@drawable/playing_stylus_lp" />
+
+            <ImageView
+                android:layout_width="147px"
+                android:layout_height="620px"
+                android:src="@drawable/playing_stylus_lp_top" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutTop"
+        android:layout_marginTop="180px">
+
+        <ImageView
+            android:id="@+id/playSong"
+            android:layout_width="176px"
+            android:layout_height="186px"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20px"
+            android:background="@drawable/btn_playing_on" />
+
+        <ImageView
+            android:id="@+id/nextSong"
+            android:layout_width="140px"
+            android:layout_height="186px"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20px"
+            android:layout_toRightOf="@+id/playSong"
+            android:background="@drawable/btn_playing_on_next" />
+
+        <ImageView
+            android:id="@+id/lastSong"
+            android:layout_width="140px"
+            android:layout_height="186px"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20px"
+            android:layout_toLeftOf="@+id/playSong"
+            android:background="@drawable/btn_playing_on_last" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

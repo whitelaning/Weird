@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:keepScreenOn="true">
+
+    <include layout="@layout/content_media_player" />
+
+    <RelativeLayout
+        android:id="@+id/mMediaControllerRoot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="140px"
+            android:background="@color/black_6">
+
+            <ImageView
+                android:id="@+id/mBackView"
+                android:layout_width="140px"
+                android:layout_height="140px"
+                android:layout_marginBottom="5px"
+                android:layout_marginLeft="5px"
+                android:layout_marginRight="5px"
+                android:layout_marginTop="5px"
+                android:padding="20px"
+                android:src="@mipmap/abc_ic_ab_back_mtrl_am_alpha" />
+
+            <ImageView
+                android:id="@+id/mMore"
+                android:layout_width="140px"
+                android:layout_height="140px"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="5px"
+                android:layout_marginLeft="5px"
+                android:layout_marginRight="5px"
+                android:layout_marginTop="5px"
+                android:padding="20px"
+                android:src="@mipmap/abc_ic_menu_moreoverflow_mtrl_alpha"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/mTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/mMore"
+                android:layout_toRightOf="@+id/mBackView"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="WhiteVideoByVitamio"
+                android:textColor="@color/text_color_white"
+                android:textSize="40px" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/mBottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="140px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/black_6"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/mLockView"
+                android:layout_width="0dp"
+                android:layout_height="100px"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5px"
+                android:layout_marginTop="5px"
+                android:layout_weight="1"
+                android:padding="20px"
+                android:src="@mipmap/ic_lock_white_24dp" />
+
+            <ImageView
+                android:id="@+id/mPreviousView"
+                android:layout_width="0dp"
+                android:layout_height="120px"
+                android:layout_marginBottom="5px"
+                android:layout_marginTop="5px"
+                android:layout_weight="1"
+                android:padding="20px"
+                android:src="@mipmap/ic_button_prev"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/mPlayView"
+                android:layout_width="0dp"
+                android:layout_height="120px"
+                android:layout_marginBottom="5px"
+                android:layout_marginTop="5px"
+                android:layout_weight="1"
+                android:padding="20px"
+                android:src="@drawable/ic_pause_white_20150109" />
+
+            <ImageView
+                android:id="@+id/mNextView"
+                android:layout_width="0dp"
+                android:layout_height="120px"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5px"
+                android:layout_marginTop="5px"
+                android:layout_weight="1"
+                android:padding="20px"
+                android:src="@mipmap/ic_button_next"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/mTypeView"
+                android:layout_width="0dp"
+                android:layout_height="100px"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5px"
+                android:layout_marginTop="5px"
+                android:layout_weight="1"
+                android:padding="20px"
+                android:src="@mipmap/ic_zoom_stretch" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:layout_above="@+id/mBottomLayout"
+            android:background="@color/black_6">
+
+            <TextView
+                android:id="@+id/mCurrentTime"
+                android:layout_width="180px"
+                android:layout_height="100px"
+
+                android:gravity="center"
+                android:text="00:00:00"
+                android:textColor="@color/text_color_white" />
+
+            <TextView
+                android:id="@+id/mVideoTime"
+                android:layout_width="180px"
+                android:layout_height="100px"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="00:00:00"
+                android:textColor="@color/text_color_white" />
+
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                app:dsb_progressColor="#FF4081"
+                app:dsb_trackColor="#FFFFFF"
+                app:dsb_indicatorColor="#FF4081"
+
+                android:id="@+id/mSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="120px"
+                android:layout_toLeftOf="@+id/mVideoTime"
+                android:layout_toRightOf="@+id/mCurrentTime"
+                app:dsb_max="100"
+                app:dsb_min="0" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/mLockView2"
+        android:layout_width="120px"
+        android:layout_height="120px"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="5px"
+        android:layout_marginLeft="10px"
+        android:layout_marginRight="5px"
+        android:layout_marginTop="5px"
+        android:padding="20px"
+        android:src="@drawable/ic_lock_open_white_20150109"
+        android:visibility="gone" />
+
+</RelativeLayout>
+
+
+
+
+
