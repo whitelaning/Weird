@@ -26,7 +26,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.framework.android.application.FrameworkApplication;
 import com.framework.android.fragment.BaseFragment;
 import com.framework.android.model.BaseEvent;
-import com.framework.android.tool.logger.Logger;
 import com.framework.android.view.ProgressLayout;
 import com.framework.android.view.ViewPagerRelativeLayout;
 import com.other.pagerslidingtabstrip.PagerSlidingTabStrip;
@@ -51,6 +50,7 @@ import de.greenrobot.event.EventBus;
 
 /**
  * Created by Zack White on 1/28/2016.
+ * 音乐页面的主布局
  */
 public class MusicFragment extends BaseFragment {
     public final static String TAG = "MusicFragment.TAG";
@@ -416,13 +416,19 @@ public class MusicFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.songPlay})
+    @OnClick({R.id.songPlay, R.id.songNext})
     public void onViewClick(View v) {
         switch (v.getId()) {
             case R.id.songPlay:
                 if (binder != null) {
                     songPlay.startAnimation(myAnimation_Translate_alpha);
                     binder.setControlCommand(MediaService.CONTROL_COMMAND_PLAY);
+                }
+                break;
+            case R.id.songNext:
+                if (binder != null) {
+                    songNext.startAnimation(myAnimation_Translate_alpha);
+                    binder.setControlCommand(MediaService.CONTROL_COMMAND_NEXT);
                 }
                 break;
         }

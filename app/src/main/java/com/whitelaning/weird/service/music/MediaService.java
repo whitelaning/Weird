@@ -15,6 +15,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.framework.android.application.FrameworkApplication;
 import com.framework.android.tool.StringUtils;
 import com.framework.android.tool.ToastUtils;
 import com.whitelaning.weird.binder.MediaBinder;
@@ -194,8 +195,6 @@ public class MediaService extends Service {
                             if (mp3Path != null) {
                                 mediaPlayer.start();
                                 prepared();
-                            } else {//----无指定情况下播放全部歌曲列表的第一首
-//                                startServiceCommand();
                             }
                         }
                         break;
@@ -373,19 +372,19 @@ public class MediaService extends Service {
     //----下一首操作----------------------
 
     private void next() {
-//        int size = getSize();
-//        if (size > 0) {
-//            if (mode == MODE_RANDOM) {
-//                position = (int) (Math.random() * size);
-//            } else {
-//                if (position == size - 1) {
-//                    position = 0;
-//                } else {
-//                    position++;
-//                }
-//            }
-//            startServiceCommand();
-//        }
+        int size = getSize();
+        if (size > 0) {
+            if (mode == MODE_RANDOM) {
+                position = (int) (Math.random() * size);
+            } else {
+                if (position == size - 1) {
+                    position = 0;
+                } else {
+                    position++;
+                }
+            }
+            startServiceCommand();
+        }
     }
 
     //----快退-----------------------------
@@ -406,6 +405,16 @@ public class MediaService extends Service {
         mHandler.sendEmptyMessageDelayed(MEDIA_PLAY_FORWARD, 100);
     }
 
+    //----获得列表歌曲数量--------------------------------
+
+    private int getSize() {
+        if (musicList == null) {
+            return 0;
+        } else {
+            return musicList.size();
+        }
+    }
+
     //----用于快退、快进后的继续播放---------------------
 
     private void replay() {
@@ -421,8 +430,17 @@ public class MediaService extends Service {
 
     // ----内部模拟生成启动服务的命令
     private void startServiceCommand() {
-        Intent intent = new Intent(getApplicationContext(), MediaService.class);
-        startService(intent);
+
+        Intent intent = new Intent(FrameworkApplication.getContext(), MediaService.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        bundle.putInt("type", type);
+        bundle.putString("select", select);
+
+        intent.putExtra("data", bundle);
+        FrameworkApplication.getContext().startService(intent);
+
     }
 
     //----初始化媒体播放器------------------------------
