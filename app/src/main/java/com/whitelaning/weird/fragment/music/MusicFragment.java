@@ -26,10 +26,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.framework.android.application.FrameworkApplication;
 import com.framework.android.fragment.BaseFragment;
 import com.framework.android.model.BaseEvent;
+import com.framework.android.tool.PreferencesUtils;
 import com.framework.android.view.ProgressLayout;
 import com.framework.android.view.ViewPagerRelativeLayout;
 import com.other.pagerslidingtabstrip.PagerSlidingTabStrip;
 import com.whitelaning.weird.R;
+import com.whitelaning.weird.activity.music.MusicPlayActivity;
 import com.whitelaning.weird.binder.MediaBinder;
 import com.whitelaning.weird.console.EventCode;
 import com.whitelaning.weird.fragment.music.child.MusicAlbumFragment;
@@ -88,6 +90,7 @@ public class MusicFragment extends BaseFragment {
     private Intent playIntent;
     private MediaBinder binder;
     private ServiceConnection serviceConnection;
+    private ModelMusicInfo mMusicInfo;//当前正在播放的音乐的信息
 
     private boolean bindState = false;// ----服务绑定状态
 
@@ -156,6 +159,25 @@ public class MusicFragment extends BaseFragment {
         viewPagerRelativeLayout.setChild_viewpager(viewPager);
         viewPager.setOffscreenPageLimit(3);//设置缓存view 的个数（实际有3个，缓存2个+正在显示的1个）
         viewPager.setAdapter(adapter);
+
+        mMusicInfo = new ModelMusicInfo();
+        mMusicInfo.setArtistPicPath(PreferencesUtils.getString("lastSongArtistPicPath"));
+        mMusicInfo.setSongId(PreferencesUtils.getInt("lastSongSongId"));
+        mMusicInfo.setArtist(PreferencesUtils.getString("lastSongArtist"));
+        mMusicInfo.setMusicName(PreferencesUtils.getString("lastSongMusicName"));
+
+        Glide.with(mContext)
+                .load(mMusicInfo.getArtistPicPath())
+                .override(160, 160)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.placeholder_disk_play_program)
+                .error(R.drawable.placeholder_disk_play_program)
+                .fallback(R.drawable.placeholder_disk_play_program)
+                .into(songAlbum);
+
+        songName.setText(mMusicInfo.getMusicName());
+        singerName.setText(mMusicInfo.getArtist());
     }
 
     private void initPagerSlidingTabStrip() {
@@ -351,6 +373,9 @@ public class MusicFragment extends BaseFragment {
                         // ----播放歌曲初始化
                         @Override
                         public void onStart(ModelMusicInfo info) {
+
+                            mMusicInfo = info;
+
                             Glide.with(mContext)
                                     .load(info.getArtistPicPath())
                                     .override(160, 160)
@@ -416,7 +441,7 @@ public class MusicFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.songPlay, R.id.songNext})
+    @OnClick({R.id.songPlay, R.id.songNext, R.id.playControlRootLayout})
     public void onViewClick(View v) {
         switch (v.getId()) {
             case R.id.songPlay:
@@ -429,6 +454,13 @@ public class MusicFragment extends BaseFragment {
                 if (binder != null) {
                     songNext.startAnimation(myAnimation_Translate_alpha);
                     binder.setControlCommand(MediaService.CONTROL_COMMAND_NEXT);
+                }
+                break;
+            case R.id.playControlRootLayout://跳转到唱片页面
+                if (binder != null && mMusicInfo != null) {
+                    FrameworkApplication.getContext().unbindService(serviceConnection);// ----解除服务绑定;// ----解除绑定
+                    bindState = false;// ----状态更新
+                    MusicPlayActivity.startActivityForResult(mContext, 1000, mMusicInfo);
                 }
                 break;
         }

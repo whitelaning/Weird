@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -12,10 +13,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.framework.android.application.FrameworkApplication;
+import com.framework.android.tool.PreferencesUtils;
 import com.framework.android.tool.StringUtils;
 import com.framework.android.tool.ToastUtils;
 import com.whitelaning.weird.binder.MediaBinder;
@@ -82,6 +85,7 @@ public class MediaService extends Service {
         super.onCreate();
         initData();
         initListener();
+        initReceiver();
     }
 
     @Override
@@ -96,6 +100,7 @@ public class MediaService extends Service {
     }
 
     private void initSongList(Bundle bundle) {
+
         position = bundle.getInt("position");
 
         //--获取播放歌曲的信息
@@ -108,8 +113,21 @@ public class MediaService extends Service {
         if (musicList == null || musicList.size() <= 0) {
             ToastUtils.show("something has error");
         } else {
-            mMusicInfo = musicList.get(position);
-            play();
+
+            if (position == -1) {
+                int lastSongId = PreferencesUtils.getInt("lastSongSongId");
+                for (int i = 0; i < musicList.size(); i++) {
+                    if (musicList.get(i).getSongId() == lastSongId && lastSongId != -1) {
+                        position = i;
+                        break;
+                    }
+                }
+            }
+
+            if (position >= 0) {
+                mMusicInfo = musicList.get(position);
+                play();
+            }
         }
     }
 
@@ -195,6 +213,18 @@ public class MediaService extends Service {
                             if (mp3Path != null) {
                                 mediaPlayer.start();
                                 prepared();
+                            } else { //----无指定情况下获取上次的列表播放上次的歌曲
+                                Intent intent = new Intent(FrameworkApplication.getContext(), MediaService.class);
+
+
+                                Bundle bundle = new Bundle();
+
+                                bundle.putInt("position", -1);
+                                bundle.putInt("type", PreferencesUtils.getInt("lastSongType"));
+                                bundle.putString("select", PreferencesUtils.getString("lastSongSelect"));
+
+                                intent.putExtra("data", bundle);
+                                FrameworkApplication.getContext().startService(intent);
                             }
                         }
                         break;
@@ -327,46 +357,35 @@ public class MediaService extends Service {
     //----自动播放操作----------------------------
 
     private void autoPlay() {
-//        if (mode == MODE_NORMAL) {
-//            if (position != getSize() - 1) {
-//                next();
-//            } else {
-//                mBinder.playPause();
-//            }
-//        } else if (mode == MODE_REPEAT_ONE) {
-//            play();
-//        } else {
-//            next();
-//        }
+        if (mode == MODE_NORMAL) {
+            if (position != getSize() - 1) {
+                next();
+            } else {
+                mBinder.playPause();
+            }
+        } else if (mode == MODE_REPEAT_ONE) {
+            play();
+        } else {
+            next();
+        }
     }
 
     //---上一首操作-----------------------------
 
     private void previous() {
-//        int size = getSize();
-//        if (size > 0) {
-//            isCommandPrevious = true;
-//            if (mode == MODE_RANDOM) {
-//                if (lastPage == page) {
-//                    if (positionList.size() > 1) {
-//                        positionList.remove(positionList.size() - 1);
-//                        position = positionList.get(positionList.size() - 1);
-//                    } else {
-//                        position = (int) (Math.random() * size);
-//                    }
-//                } else {
-//                    positionList.clear();
-//                    position = (int) (Math.random() * size);
-//                }
-//            } else {
-//                if (position == 0) {
-//                    position = size - 1;
-//                } else {
-//                    position--;
-//                }
-//            }
-//            startServiceCommand();
-//        }
+        int size = getSize();
+        if (size > 0) {
+            if (mode == MODE_RANDOM) {
+                position = (int) (Math.random() * size);
+            } else {
+                if (position - 1 >= 0) {
+                    position--;
+                } else {
+                    position = size - 1;
+                }
+            }
+            startServiceCommand();
+        }
     }
 
     //----下一首操作----------------------
@@ -399,8 +418,7 @@ public class MediaService extends Service {
     //----快进-----------------------------
 
     private void forward() {
-        int current = mp3CurrentTime + 1000;
-        mp3CurrentTime = current < mp3DurationTime ? current : mp3DurationTime;
+        mp3CurrentTime = mp3CurrentTime + 1000 < mp3DurationTime ? mp3CurrentTime + 1000 : mp3DurationTime;
         mBinder.playUpdate(mp3CurrentTime);
         mHandler.sendEmptyMessageDelayed(MEDIA_PLAY_FORWARD, 100);
     }
@@ -440,7 +458,6 @@ public class MediaService extends Service {
 
         intent.putExtra("data", bundle);
         FrameworkApplication.getContext().startService(intent);
-
     }
 
     //----初始化媒体播放器------------------------------
@@ -461,11 +478,30 @@ public class MediaService extends Service {
     //----准备好开始播放工作----------------------------
     private void prepared() {
         mHandler.sendEmptyMessage(MEDIA_PLAY_START);
+        sendMusicInformationByEventBus();
+        saveMusicInformationByPreferences();
+    }
+
+    private void saveMusicInformationByPreferences() {
+        PreferencesUtils.putString("lastSongSelect", select);
+        PreferencesUtils.putInt("lastSongType", type);
+        PreferencesUtils.putString("lastSongMusicName", mMusicInfo.getMusicName());
+        PreferencesUtils.putString("lastSongArtist", mMusicInfo.getArtist());
+        PreferencesUtils.putInt("lastSongSongId", mMusicInfo.getSongId());
+        PreferencesUtils.putString("lastSongArtistPicPath", mMusicInfo.getArtistPicPath());
+    }
+
+
+    private void sendMusicInformationByEventBus() {
         EventNowPlayMusicInformation object = new EventNowPlayMusicInformation(EventCode.EVENT_MUSIC_PLAY_MUSIC_INFORMATION);
         object.setPath(mMusicInfo.getData());
         object.setAlbumId(mMusicInfo.getAlbumId());
         object.setArtist(mMusicInfo.getArtist());
+        object.setArtistPicPath(mMusicInfo.getArtistPicPath());
         object.setSongId(mMusicInfo.getSongId());
+        object.setMusicName(mMusicInfo.getMusicName());
+        object.setDuration(mMusicInfo.getDuration());
+
         EventBus.getDefault().post(object);
     }
 
@@ -473,6 +509,7 @@ public class MediaService extends Service {
     private void start() {
         mp3DurationTime = mediaPlayer.getDuration();
         mBinder.playStart(mMusicInfo);
+        mHandler.sendEmptyMessageDelayed(MEDIA_PLAY_UPDATE, UPDATE_UI_TIME);
     }
 
     private void update() {
@@ -513,12 +550,6 @@ public class MediaService extends Service {
         removeUpdateMsg();
     }
 
-    private class ServiceReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-        }
-    }
-
     private static class ServiceHandler extends Handler {
         WeakReference<MediaService> reference;
 
@@ -555,6 +586,54 @@ public class MediaService extends Service {
                     break;
             }
         }
+    }
+
+    public static final String BROADCAST_ACTION_MUSIC_PLAY =
+            "com.whitelaning.zackwhite.weird.music.play";
+    public static final String BROADCAST_ACTION_MUSIC_NEXT =
+            "com.whitelaning.zackwhite.weird.music.next";
+    public static final String BROADCAST_ACTION_MUSIC_LAST =
+            "com.whitelaning.zackwhite.weird.music.last";
+
+    final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+
+    private class ServiceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent != null) {
+                switch (intent.getAction()) {
+                    case BROADCAST_ACTION_MUSIC_PLAY:
+                        if (mediaPlayer.isPlaying()) {
+                            pause();
+                        } else {
+                            if (mp3Path != null) {
+                                mediaPlayer.start();
+                                prepared();
+                            }
+                        }
+                        break;
+                    case BROADCAST_ACTION_MUSIC_NEXT:
+                        next();
+                        break;
+                    case BROADCAST_ACTION_MUSIC_LAST:
+                        previous();
+                        break;
+                }
+            }
+        }
+    }
+
+    private void initReceiver() {
+        receiver = new ServiceReceiver();//----注册广播
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_HEADSET_PLUG); //----耳机插入状态广播
+        intentFilter.addAction(Intent.ACTION_MEDIA_BUTTON);
+        intentFilter.addAction(BROADCAST_ACTION_MUSIC_PLAY);
+        intentFilter.addAction(BROADCAST_ACTION_MUSIC_NEXT);
+        intentFilter.addAction(BROADCAST_ACTION_MUSIC_LAST);
+        localBroadcastManager.registerReceiver(receiver, intentFilter);
     }
 }
 

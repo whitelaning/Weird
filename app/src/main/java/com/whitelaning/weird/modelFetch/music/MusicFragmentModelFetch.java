@@ -28,7 +28,7 @@ public class MusicFragmentModelFetch extends BaseModelFetch {
                 MusicUtils.queryFolder(mContext);
                 Message msg = Message.obtain();
                 msg.what = 1;
-                mHandler.sendMessageDelayed(msg, 1600);
+                mHandler.sendMessageDelayed(msg, 1200);
             }
         }).start();
     }

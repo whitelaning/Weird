@@ -153,7 +153,7 @@ public class MediaPlayerActivity extends BaseActivity {
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
                 mIsStartTrackingTouch = true;
                 mSeekBar.setIndicatorFormatter(TimeUtils.secToTime(mVideoView.getCurrentPosition()));
-                mSeekBar.setProgress((int) (mVideoView.getCurrentPosition() * 100 / mDuration));
+//                mSeekBar.setProgress((int) (mVideoView.getCurrentPosition() * 100 / mDuration));
             }
 
             @Override

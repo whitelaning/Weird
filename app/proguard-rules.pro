@@ -17,3 +17,27 @@
 #}
 -keep class io.vov.utils.** { *; }
 -keep class io.vov.vitamio.** { *; }
+#------EventBus-Start-----
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends de.greenrobot.event.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+#------EventBus-End-----
+
+#------Butterknife-Start-----
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+#------Butterknife-End-----

@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.framework.android.model.BaseViewHolder;
 import com.framework.android.tool.StringUtils;
-import com.framework.android.tool.logger.Logger;
 import com.whitelaning.weird.R;
 import com.whitelaning.weird.console.IConstants;
 import com.whitelaning.weird.model.music.ModelArtistInfo;
@@ -198,8 +197,7 @@ public class MusicSingerFragmentAdapter extends RecyclerView.Adapter<BaseViewHol
 
                                         ContentValues values2 = new ContentValues();
                                         values2.put("artistPicPath", picUrl);
-                                        int i = DataSupport.updateAll(ModelMusicInfo.class, values2, "artist = ?", sModelArtistInfo.getArtistName());
-                                        Logger.i("i = " + i + "\n" + "sModelArtistInfo.getArtistName() = " + sModelArtistInfo.getArtistName());
+                                        DataSupport.updateAll(ModelMusicInfo.class, values2, "artist = ?", sModelArtistInfo.getArtistName());
                                     }
                                 }).start();
 

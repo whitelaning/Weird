@@ -107,6 +107,13 @@ public class PreferencesUtils {
         return editor.commit();
     }
 
+    public static boolean putInt(String key, int value) {
+        SharedPreferences settings = FrameworkApplication.getContext().getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(key, value);
+        return editor.commit();
+    }
+
     /**
      * get int preferences
      *
@@ -118,6 +125,10 @@ public class PreferencesUtils {
      */
     public static int getInt(Context context, String key) {
         return getInt(context, key, -1);
+    }
+
+    public static int getInt(String key) {
+        return getInt(FrameworkApplication.getContext(), key, -1);
     }
 
     /**

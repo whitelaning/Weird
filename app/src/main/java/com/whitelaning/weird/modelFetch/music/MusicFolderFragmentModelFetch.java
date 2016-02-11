@@ -33,11 +33,11 @@ public class MusicFolderFragmentModelFetch extends BaseModelFetch {
                     list.addAll(DataSupport.findAll(ModelFolderInfo.class));
                     Message msg = Message.obtain();
                     msg.what = 1;
-                    mHandler.sendMessageDelayed(msg, 2000);
+                    mHandler.sendMessageDelayed(msg, 1200);
                 } else {
                     Message msg = Message.obtain();
                     msg.what = 0;
-                    mHandler.sendMessageDelayed(msg, 2000);
+                    mHandler.sendMessageDelayed(msg, 1200);
                 }
             }
         }).start();

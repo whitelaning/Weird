@@ -10,10 +10,29 @@ public class EventNowPlayMusicInformation extends BaseEvent {
     private int songId;
     private int albumId;
     private String artist;
+    private String artistPicPath;
     private String path;
+    private String musicName;
+    private int duration;
 
     public EventNowPlayMusicInformation(int TAG) {
         super(TAG);
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getMusicName() {
+        return musicName;
+    }
+
+    public void setMusicName(String musicName) {
+        this.musicName = musicName;
     }
 
     public int getSongId() {
@@ -46,6 +65,14 @@ public class EventNowPlayMusicInformation extends BaseEvent {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public void setArtistPicPath(String artistPicPath) {
+        this.artistPicPath = artistPicPath;
+    }
+
+    public String getArtistPicPath() {
+        return artistPicPath;
     }
 }
 
