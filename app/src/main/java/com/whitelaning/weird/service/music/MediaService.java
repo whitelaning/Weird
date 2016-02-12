@@ -78,7 +78,8 @@ public class MediaService extends Service {
     private String select;//搜索条件
 
     private ModelMusicInfo mMusicInfo;
-    private List<ModelMusicInfo> musicList;
+
+    private static List<ModelMusicInfo> musicList;
 
     @Override
     public void onCreate() {
@@ -152,7 +153,7 @@ public class MediaService extends Service {
 
             @Override
             public void onPrepared(MediaPlayer mp) {
-                mp.start();
+                start();
                 mp3CurrentTime = 0;//----重置
                 prepared();//----准备播放
             }
@@ -211,11 +212,10 @@ public class MediaService extends Service {
                             pause();
                         } else {
                             if (mp3Path != null) {
-                                mediaPlayer.start();
+                                start();
                                 prepared();
                             } else { //----无指定情况下获取上次的列表播放上次的歌曲
                                 Intent intent = new Intent(FrameworkApplication.getContext(), MediaService.class);
-
 
                                 Bundle bundle = new Bundle();
 
@@ -311,7 +311,11 @@ public class MediaService extends Service {
             mediaPlayer = null;
         }
         if (receiver != null) {
-            unregisterReceiver(receiver);
+            try {
+                unregisterReceiver(receiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -378,10 +382,10 @@ public class MediaService extends Service {
             if (mode == MODE_RANDOM) {
                 position = (int) (Math.random() * size);
             } else {
-                if (position - 1 >= 0) {
-                    position--;
-                } else {
+                if (position == 0) {
                     position = size - 1;
+                } else {
+                    position--;
                 }
             }
             startServiceCommand();
@@ -425,7 +429,7 @@ public class MediaService extends Service {
 
     //----获得列表歌曲数量--------------------------------
 
-    private int getSize() {
+    public static int getSize() {
         if (musicList == null) {
             return 0;
         } else {
@@ -478,7 +482,7 @@ public class MediaService extends Service {
     //----准备好开始播放工作----------------------------
     private void prepared() {
         mHandler.sendEmptyMessage(MEDIA_PLAY_START);
-        sendMusicInformationByEventBus();
+        sendMusicInformation();
         saveMusicInformationByPreferences();
     }
 
@@ -492,7 +496,7 @@ public class MediaService extends Service {
     }
 
 
-    private void sendMusicInformationByEventBus() {
+    private void sendMusicInformation() {
         EventNowPlayMusicInformation object = new EventNowPlayMusicInformation(EventCode.EVENT_MUSIC_PLAY_MUSIC_INFORMATION);
         object.setPath(mMusicInfo.getData());
         object.setAlbumId(mMusicInfo.getAlbumId());
@@ -503,13 +507,23 @@ public class MediaService extends Service {
         object.setDuration(mMusicInfo.getDuration());
 
         EventBus.getDefault().post(object);
+
+        Intent intent = new Intent();
+        intent.setAction(BROADCAST_ACTION_MUSIC_START);
+        intent.putExtra("musicInfor", mMusicInfo);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     //----开始播放，获得总时间和AudioSessionId，并启动更新UI任务-------------
     private void start() {
+        mediaPlayer.start();
         mp3DurationTime = mediaPlayer.getDuration();
         mBinder.playStart(mMusicInfo);
         mHandler.sendEmptyMessageDelayed(MEDIA_PLAY_UPDATE, UPDATE_UI_TIME);
+
+        Intent intent = new Intent();
+        intent.setAction(BROADCAST_ACTION_MUSIC_START);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     private void update() {
@@ -520,9 +534,14 @@ public class MediaService extends Service {
 
     //----暂停音乐-------------------------
     private void pause() {
+
         removeAllMsg();//----移除所有消息
         mediaPlayer.pause();
         mBinder.playPause();
+
+        Intent intent = new Intent();
+        intent.setAction(BROADCAST_ACTION_MUSIC_PAUSE);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     //----移除更新UI的消息-------------------
@@ -588,6 +607,10 @@ public class MediaService extends Service {
         }
     }
 
+    public static final String BROADCAST_ACTION_MUSIC_START =
+            "com.whitelaning.zackwhite.weird.music.start";
+    public static final String BROADCAST_ACTION_MUSIC_PAUSE =
+            "com.whitelaning.zackwhite.weird.music.pause";
     public static final String BROADCAST_ACTION_MUSIC_PLAY =
             "com.whitelaning.zackwhite.weird.music.play";
     public static final String BROADCAST_ACTION_MUSIC_NEXT =
@@ -609,8 +632,19 @@ public class MediaService extends Service {
                             pause();
                         } else {
                             if (mp3Path != null) {
-                                mediaPlayer.start();
+                                start();
                                 prepared();
+                            } else {
+                                Intent intent2 = new Intent(FrameworkApplication.getContext(), MediaService.class);
+
+                                Bundle bundle = new Bundle();
+
+                                bundle.putInt("position", -1);
+                                bundle.putInt("type", PreferencesUtils.getInt("lastSongType"));
+                                bundle.putString("select", PreferencesUtils.getString("lastSongSelect"));
+
+                                intent2.putExtra("data", bundle);
+                                FrameworkApplication.getContext().startService(intent2);
                             }
                         }
                         break;

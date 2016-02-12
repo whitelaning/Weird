@@ -164,4 +164,22 @@ public class ModelMusicInfo extends DataSupport implements Parcelable {
             return new ModelMusicInfo[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "ModelMusicInfo{" +
+                "duration=" + duration +
+                ", songId=" + songId +
+                ", albumId=" + albumId +
+                ", album='" + album + '\'' +
+                ", albumKey='" + albumKey + '\'' +
+                ", data='" + data + '\'' +
+                ", folder='" + folder + '\'' +
+                ", musicName='" + musicName + '\'' +
+                ", musicNameKey='" + musicNameKey + '\'' +
+                ", artist='" + artist + '\'' +
+                ", artistKey='" + artistKey + '\'' +
+                ", artistPicPath='" + artistPicPath + '\'' +
+                '}';
+    }
 }

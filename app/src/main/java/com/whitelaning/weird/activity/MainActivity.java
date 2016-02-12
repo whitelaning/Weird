@@ -9,12 +9,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.framework.android.activity.BaseActivity;
 import com.framework.android.model.BaseEvent;
 import com.whitelaning.weird.R;
+import com.whitelaning.weird.activity.music.MusicScanActivity;
 import com.whitelaning.weird.console.EventCode;
 import com.whitelaning.weird.fragment.MainFragment;
 import com.whitelaning.weird.fragment.album.AlbumFragment;
@@ -139,6 +141,18 @@ public class MainActivity extends BaseActivity
 
         mNavView = (NavigationView) findViewById(R.id.nav_view);
         mNavView.setNavigationItemSelectedListener(this);
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.actionScan:
+                        MusicScanActivity.startActivityForResult(MainActivity.this, 1001);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -258,6 +272,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_share) {
             index = 4;
         }
+
+        invalidateOptionsMenu();
     }
 
     public void onEventMainThread(BaseEvent baseEvent) {
@@ -270,10 +286,14 @@ public class MainActivity extends BaseActivity
                     } else {
                         initToolbarBack(item1.getTitle(), getResources().getColor(item1.getColor()));
                     }
+
+                    invalidateOptionsMenu();
+
                     break;
                 case EventCode.EVENT_CHANGE_TOOLBAR_FROM_VIDEO_FRAGMENT:
                     EventChangeToolBar item2 = (EventChangeToolBar) baseEvent;
                     initToolbarBack(item2.getTitle(), getResources().getColor(item2.getColor()));
+
                     break;
             }
         }
@@ -295,5 +315,51 @@ public class MainActivity extends BaseActivity
                 doFragmentBack();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (index == 3) {
+
+            MusicFragment musicFragment = (MusicFragment) getSupportFragmentManager().findFragmentByTag(MusicFragment.TAG);
+            switch (musicFragment.getIndex()) {
+                case 1:
+                    MusicSingerFragment musicSingerFragment = (MusicSingerFragment) musicFragment.getFragment(1);
+                    if (musicSingerFragment.getIsFolder()) {
+                        menu.findItem(R.id.actionScan).setVisible(true);
+                    } else {
+                        menu.findItem(R.id.actionScan).setVisible(false);
+                    }
+                    break;
+                case 2:
+                    MusicAlbumFragment musicAlbumFragment = (MusicAlbumFragment) musicFragment.getFragment(2);
+                    if (musicAlbumFragment.getIsFolder()) {
+                        menu.findItem(R.id.actionScan).setVisible(true);
+                    } else {
+                        menu.findItem(R.id.actionScan).setVisible(false);
+                    }
+                    break;
+                case 3:
+                    MusicFolderFragment musicFolderFragment = (MusicFolderFragment) musicFragment.getFragment(3);
+                    if (musicFolderFragment.getIsFolder()) {
+                        menu.findItem(R.id.actionScan).setVisible(true);
+                    } else {
+                        menu.findItem(R.id.actionScan).setVisible(false);
+                    }
+                    break;
+            }
+
+
+        } else {
+            menu.findItem(R.id.actionScan).setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 }

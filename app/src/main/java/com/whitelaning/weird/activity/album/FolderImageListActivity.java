@@ -53,7 +53,6 @@ public class FolderImageListActivity extends BaseActivity {
     private ArrayList<String> mImages = new ArrayList<>();
     private FolderImageListAdapter mImageAdapter;
     private boolean mMultiselect = false;
-    private MaterialDialog mDeleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

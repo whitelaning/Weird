@@ -53,7 +53,8 @@
         </activity>
         <activity android:name=".activity.album.FolderImageListActivity" />
         <activity android:name=".activity.album.ImageBrowseActivity" />
-        <activity android:name=".activity.music.MusicPlayActivity"></activity>
+        <activity android:name=".activity.music.MusicPlayActivity" />
+        <activity android:name=".activity.music.MusicScanActivity"></activity>
     </application>
 
 </manifest>

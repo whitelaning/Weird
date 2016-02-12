@@ -166,6 +166,12 @@ public class MediaBinder extends Binder {
     }
 
     public boolean isPlaying() {
-        return MediaService.mediaPlayer.isPlaying();
+        try {
+            return MediaService.mediaPlayer.isPlaying();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return false;
     }
 }

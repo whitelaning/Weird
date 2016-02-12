@@ -1,8 +1,10 @@
 package com.whitelaning.weird.fragment.music;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +13,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.framework.android.application.FrameworkApplication;
 import com.framework.android.fragment.BaseFragment;
-import com.framework.android.model.BaseEvent;
 import com.framework.android.tool.PreferencesUtils;
 import com.framework.android.view.ProgressLayout;
 import com.framework.android.view.ViewPagerRelativeLayout;
@@ -90,7 +92,9 @@ public class MusicFragment extends BaseFragment {
     private Intent playIntent;
     private MediaBinder binder;
     private ServiceConnection serviceConnection;
+    private ServiceReceiver receiver;
     private ModelMusicInfo mMusicInfo;//当前正在播放的音乐的信息
+    private LocalBroadcastManager localBroadcastManager;
 
     private boolean bindState = false;// ----服务绑定状态
 
@@ -115,7 +119,6 @@ public class MusicFragment extends BaseFragment {
         setRetainInstance(true);
         initIntent();
         initServiceConnection();// ----初始化服务绑定
-        EventBus.getDefault().register(this);
     }
 
     private void initIntent() {
@@ -133,6 +136,7 @@ public class MusicFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         initView();
         initData();
+        initReceiver();
         initModelFetch();
         initPagerSlidingTabStrip();
         return view;
@@ -150,6 +154,8 @@ public class MusicFragment extends BaseFragment {
 
     private void initData() {
         mContext = getActivity();
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
 
         // ----初始化动画
         myAnimation_Translate_alpha = AnimationUtils.loadAnimation(mContext,
@@ -324,9 +330,9 @@ public class MusicFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
         if (bindState) {
             FrameworkApplication.getContext().unbindService(serviceConnection);// ----解除服务绑定
+            bindState = false;
         }
     }
 
@@ -432,15 +438,6 @@ public class MusicFragment extends BaseFragment {
         };
     }
 
-    public void onEventMainThread(BaseEvent baseEvent) {
-        if (baseEvent != null) {
-            switch (baseEvent.getTAG()) {
-                case EventCode.EVENT_MUSIC_PLAY_MUSIC_INFORMATION:
-                    break;
-            }
-        }
-    }
-
     @OnClick({R.id.songPlay, R.id.songNext, R.id.playControlRootLayout})
     public void onViewClick(View v) {
         switch (v.getId()) {
@@ -463,6 +460,51 @@ public class MusicFragment extends BaseFragment {
                     MusicPlayActivity.startActivityForResult(mContext, 1000, mMusicInfo);
                 }
                 break;
+        }
+    }
+
+    private void initReceiver() {
+        receiver = new ServiceReceiver();//----注册广播
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MediaService.BROADCAST_ACTION_MUSIC_START);
+        intentFilter.addAction(MediaService.BROADCAST_ACTION_MUSIC_PAUSE);
+        localBroadcastManager.registerReceiver(receiver, intentFilter);
+    }
+
+    //更新底部控制栏内容
+    private class ServiceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent != null) {
+                switch (intent.getAction()) {
+                    case MediaService.BROADCAST_ACTION_MUSIC_START:
+                        ModelMusicInfo info = intent.getParcelableExtra("musicInfor");
+                        if (info != null) {
+                            mMusicInfo = info;
+
+                            Glide.with(mContext)
+                                    .load(info.getArtistPicPath())
+                                    .override(160, 160)
+                                    .centerCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(R.drawable.placeholder_disk_play_program)
+                                    .error(R.drawable.placeholder_disk_play_program)
+                                    .fallback(R.drawable.placeholder_disk_play_program)
+                                    .into(songAlbum);
+
+                            songName.setText(info.getMusicName());
+                            singerName.setText(info.getArtist());
+
+                            songPlay.setImageResource(R.drawable.playbar_btn_pause);
+                        }
+                        break;
+                    case MediaService.BROADCAST_ACTION_MUSIC_PAUSE:
+                        songPlay.setImageResource(R.drawable.playbar_btn_play);
+                        break;
+                }
+            }
         }
     }
 }

@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.framework.android.activity.BaseActivity;
 import com.framework.android.application.FrameworkApplication;
-import com.framework.android.model.BaseEvent;
 import com.framework.android.tool.TimeUtils;
 import com.framework.android.tool.ToastUtils;
 import com.nineoldandroids.animation.Animator;
@@ -31,8 +30,6 @@ import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.whitelaning.weird.R;
 import com.whitelaning.weird.binder.MediaBinder;
-import com.whitelaning.weird.console.EventCode;
-import com.whitelaning.weird.model.music.EventNowPlayMusicInformation;
 import com.whitelaning.weird.model.music.ModelMusicInfo;
 import com.whitelaning.weird.service.music.MediaService;
 
@@ -43,7 +40,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import butterknife.OnTouch;
-import de.greenrobot.event.EventBus;
 
 public class MusicPlayActivity extends BaseActivity {
 
@@ -78,7 +74,6 @@ public class MusicPlayActivity extends BaseActivity {
     @Bind(R.id.musicTime)
     TextView musicTime;
 
-    private boolean isPlaying = false;
     private boolean isAnimation = false;
     private boolean bindState = false;// ----服务绑定状态
 
@@ -90,7 +85,7 @@ public class MusicPlayActivity extends BaseActivity {
     private boolean mIsStartTrackingTouch = false;
     private int mProgressValue = 0;//当前进度条的进度，最高为100
 
-    final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+    private LocalBroadcastManager localBroadcastManager;
 
     public static void startActivityForResult(Context mContext, int requestCode, ModelMusicInfo mMusicInfo) {
         Intent intent = new Intent(mContext, MusicPlayActivity.class);
@@ -153,15 +148,15 @@ public class MusicPlayActivity extends BaseActivity {
     }
 
     private void initData() {
-        EventBus.getDefault().register(this);
-        isPlaying = MediaService.mediaPlayer.isPlaying();
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+
         setArtistPic();
         initPlayAlbumAnimator();
 
         currentTime.setText("00:00");
         musicTime.setText(TimeUtils.secToTime(mMusicInfo.getDuration()));
 
-        if (isPlaying) {
+        if (MediaService.mediaPlayer != null && MediaService.mediaPlayer.isPlaying()) {
             initPlayingAnimator();
         } else {
             //nothing
@@ -199,6 +194,12 @@ public class MusicPlayActivity extends BaseActivity {
                         @Override
                         public void onStart(ModelMusicInfo info) {
                             mMusicInfo = info;
+
+                            setArtistPic();
+                            initToolbar(mMusicInfo.getMusicName(), mMusicInfo.getArtist(), getResources().getColor(R.color.colorRedDark));
+
+                            currentTime.setText("00:00");
+                            musicTime.setText(TimeUtils.secToTime(mMusicInfo.getDuration()));
                         }
                     });
 
@@ -263,33 +264,8 @@ public class MusicPlayActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
         if (bindState) {
             FrameworkApplication.getContext().unbindService(serviceConnection);// ----解除服务绑定
-        }
-    }
-
-    public void onEventMainThread(BaseEvent baseEvent) {
-        if (baseEvent != null) {
-            switch (baseEvent.getTAG()) {
-                case EventCode.EVENT_MUSIC_PLAY_MUSIC_INFORMATION:
-                    EventNowPlayMusicInformation item = (EventNowPlayMusicInformation) baseEvent;
-                    mMusicInfo.setMusicName(item.getMusicName());
-                    mMusicInfo.setArtist(item.getArtist());
-                    mMusicInfo.setSongId(item.getSongId());
-                    mMusicInfo.setArtistPicPath(item.getArtistPicPath());
-                    mMusicInfo.setDuration(item.getDuration());
-
-                    setArtistPic();
-                    initToolbar(mMusicInfo.getMusicName(), mMusicInfo.getArtist(), getResources().getColor(R.color.colorRedDark));
-
-                    isPlaying = MediaService.mediaPlayer.isPlaying();
-
-                    currentTime.setText("00:00");
-                    musicTime.setText(TimeUtils.secToTime(mMusicInfo.getDuration()));
-
-                    break;
-            }
         }
     }
 
@@ -324,13 +300,11 @@ public class MusicPlayActivity extends BaseActivity {
     }
 
     private void changePlayNeedleState() {
-        if (isPlaying) {
+        if (MediaService.mediaPlayer != null && MediaService.mediaPlayer.isPlaying()) {
             isAnimation = true;
-            isPlaying = false;
             playendAnimator();
         } else {
             isAnimation = true;
-            isPlaying = true;
             playingAnimator();
         }
     }
@@ -430,13 +404,19 @@ public class MusicPlayActivity extends BaseActivity {
                 if (isAnimation) {
                     return;
                 }
+
                 changePlayNeedleState();
                 break;
             case R.id.nextSong:
                 if (isAnimation) {
                     return;
                 }
-                if (isPlaying) {
+
+                if (MediaService.getSize() == 0) {
+                    return;
+                }
+
+                if (MediaService.mediaPlayer != null && MediaService.mediaPlayer.isPlaying()) {
                     Intent intentNextSong = new Intent();
                     intentNextSong.setAction(MediaService.BROADCAST_ACTION_MUSIC_NEXT);
                     localBroadcastManager.sendBroadcast(intentNextSong);
@@ -473,7 +453,12 @@ public class MusicPlayActivity extends BaseActivity {
                 if (isAnimation) {
                     return;
                 }
-                if (isPlaying) {
+
+                if (MediaService.getSize() == 0) {
+                    return;
+                }
+
+                if (MediaService.mediaPlayer != null && MediaService.mediaPlayer.isPlaying()) {
                     Intent intentLastSong = new Intent();
                     intentLastSong.setAction(MediaService.BROADCAST_ACTION_MUSIC_LAST);
                     localBroadcastManager.sendBroadcast(intentLastSong);
@@ -512,12 +497,12 @@ public class MusicPlayActivity extends BaseActivity {
     public boolean onViewLongClick(View v) {
         switch (v.getId()) {
             case R.id.nextSong:
-                if (binder != null) {
+                if (binder != null && binder.isPlaying()) {
                     binder.setControlCommand(MediaService.CONTROL_COMMAND_FORWARD);
                 }
                 break;
             case R.id.lastSong:
-                if (binder != null) {
+                if (binder != null && binder.isPlaying()) {
                     binder.setControlCommand(MediaService.CONTROL_COMMAND_REWIND);
                 }
                 break;
@@ -530,12 +515,12 @@ public class MusicPlayActivity extends BaseActivity {
     public boolean onViewTouchClick(View v, MotionEvent event) {
         switch (v.getId()) {
             case R.id.nextSong:
-                if (binder != null && event.getAction() == MotionEvent.ACTION_UP) {
+                if (binder != null && event.getAction() == MotionEvent.ACTION_UP && binder.isPlaying()) {
                     binder.setControlCommand(MediaService.CONTROL_COMMAND_REPLAY);
                 }
                 break;
             case R.id.lastSong:
-                if (binder != null && event.getAction() == MotionEvent.ACTION_UP) {
+                if (binder != null && event.getAction() == MotionEvent.ACTION_UP && binder.isPlaying()) {
                     binder.setControlCommand(MediaService.CONTROL_COMMAND_REPLAY);
                 }
                 break;
