@@ -40,7 +40,8 @@ public class MusicUtils {
             MediaStore.Audio.Media.ALBUM_ID,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ARTIST_ID,
-            MediaStore.Audio.Media.DURATION};
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATE_ADDED};
 
     private static String[] proj_album = new String[]{
             MediaStore.Audio.Albums.ARTIST,
@@ -252,6 +253,8 @@ public class MusicUtils {
                     .getColumnIndex(MediaStore.Audio.Media.TITLE)));
             music.setArtist(cursor.getString(cursor
                     .getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+            music.setAddTime(cursor.getLong(cursor
+                    .getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)));
 
             String filePath = cursor.getString(cursor
                     .getColumnIndex(MediaStore.Audio.Media.DATA));

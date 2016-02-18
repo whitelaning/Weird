@@ -214,6 +214,10 @@ public class MusicSingerFragment extends BaseFragment {
                     mAdapter.setArtist(item.getArtist());
                     mAdapter.notifyDataSetChanged();
                     break;
+                case EventCode.EVENT_MUSIC_SCANNED_INFORMATION:
+                    mProgressLayout.showProgress();
+                    mModelFetch.getData();
+                    break;
             }
         }
     }

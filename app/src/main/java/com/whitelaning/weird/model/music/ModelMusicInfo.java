@@ -18,6 +18,15 @@ public class ModelMusicInfo extends DataSupport implements Parcelable {
     private String artist;
     private String artistKey;
     private String artistPicPath;
+    private long  addTime;
+
+    public long getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(long addTime) {
+        this.addTime = addTime;
+    }
 
     public String getArtistPicPath() {
         return artistPicPath;

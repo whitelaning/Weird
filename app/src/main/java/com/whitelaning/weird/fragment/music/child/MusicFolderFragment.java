@@ -214,6 +214,10 @@ public class MusicFolderFragment extends BaseFragment {
                     mAdapter.setPath(item.getPath());
                     mAdapter.notifyDataSetChanged();
                     break;
+                case EventCode.EVENT_MUSIC_SCANNED_INFORMATION:
+                    mProgressLayout.showProgress();
+                    mModelFetch.getData();
+                    break;
             }
         }
     }

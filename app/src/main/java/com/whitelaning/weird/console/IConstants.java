@@ -13,4 +13,6 @@ public class IConstants {
     public static final int START_FROM_ALBUM = 2;
     public static final int START_FROM_LOCAL = 3;
     public static final int START_FROM_FOLDER = 4;
+
+    public static final String MUSIC_SCANNED_INFORMATION = "com.whitelaning.zackwhite.weird.music.scanned.information";
 }

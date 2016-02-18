@@ -29,7 +29,7 @@ public class MusicSingleFragmentModelFetch extends BaseModelFetch {
             public void run() {
                 if (DataSupport.count(ModelMusicInfo.class) > 0) {
                     list.clear();
-                    list.addAll(DataSupport.findAll(ModelMusicInfo.class));
+                    list.addAll(DataSupport.order("addTime desc").find(ModelMusicInfo.class));
                     Message msg = Message.obtain();
                     msg.what = 1;
                     mHandler.sendMessageDelayed(msg, 1200);

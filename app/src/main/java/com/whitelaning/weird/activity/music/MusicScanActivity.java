@@ -3,9 +3,12 @@ package com.whitelaning.weird.activity.music;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -13,6 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.framework.android.activity.BaseActivity;
+import com.framework.android.application.FrameworkApplication;
+import com.framework.android.model.BaseEvent;
+import com.framework.android.tool.ToastUtils;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.animation.AnimatorProxy;
@@ -20,10 +26,20 @@ import com.whitelaning.weird.R;
 import com.whitelaning.weird.animator.AnimatorPath;
 import com.whitelaning.weird.animator.PathEvaluator;
 import com.whitelaning.weird.animator.PathPoint;
+import com.whitelaning.weird.console.EventCode;
+import com.whitelaning.weird.console.IConstants;
+import com.whitelaning.weird.model.music.ModelAlbumInfo;
+import com.whitelaning.weird.model.music.ModelArtistInfo;
+import com.whitelaning.weird.model.music.ModelFolderInfo;
+import com.whitelaning.weird.model.music.ModelMusicInfo;
+import com.whitelaning.weird.tool.music.MusicUtils;
+
+import org.litepal.crud.DataSupport;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 public class MusicScanActivity extends BaseActivity {
 
@@ -39,6 +55,7 @@ public class MusicScanActivity extends BaseActivity {
     private ObjectAnimator scanMusicAnimator;
     private AnimatorProxy mButtonProxy;
     private PathEvaluator mEvaluator = new PathEvaluator();
+    private boolean isScaned = false;
 
     public static void startActivityForResult(Context mContext, int requestCode) {
         Intent intent = new Intent(mContext, MusicScanActivity.class);
@@ -94,9 +111,93 @@ public class MusicScanActivity extends BaseActivity {
     public void onViewClick(View v) {
         switch (v.getId()) {
             case R.id.scan:
-                scanMusicAnimator.start();
+                if (isScaned) {
+                    setResult(1001);
+                    finish();
+                } else {
+                    if (!scanMusicAnimator.isRunning()) {
+                        isScaned = false;
+                        scan.setText("Scanning...");
+                        scanMusicAnimator.start();
+                        scanMusicAction();
+                    }
+                }
                 break;
         }
+    }
+
+    private void scanMusicAction() {
+        new ScanTask().execute();
+    }
+
+    /**
+     * 执行扫描任务
+     *
+     * @author Administrator
+     */
+    private class ScanTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            try {
+                DataSupport.deleteAll(ModelMusicInfo.class);
+                DataSupport.deleteAll(ModelArtistInfo.class);
+                DataSupport.deleteAll(ModelAlbumInfo.class);
+                DataSupport.deleteAll(ModelFolderInfo.class);
+
+                MusicUtils.queryMusic(FrameworkApplication.getContext(), IConstants.START_FROM_LOCAL);
+                MusicUtils.queryArtist(FrameworkApplication.getContext());
+                MusicUtils.queryAlbums(FrameworkApplication.getContext());
+                MusicUtils.queryFolder(FrameworkApplication.getContext());
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+
+            scanMusicAnimator.cancel();
+
+            isScaned = result;
+
+            if (result) {
+                ToastUtils.show("Scanning is finished");
+                scan.setText("Scaned");
+
+                Intent intent = new Intent();
+                intent.setAction(IConstants.MUSIC_SCANNED_INFORMATION);
+                LocalBroadcastManager.getInstance(MusicScanActivity.this).sendBroadcast(intent);
+
+                BaseEvent object = new BaseEvent(EventCode.EVENT_MUSIC_SCANNED_INFORMATION);
+                EventBus.getDefault().post(object);
+
+            } else {
+                ToastUtils.show("Something was error");
+                scan.setText("Complete Scan");
+            }
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (scanMusicAnimator.isRunning()) {// ----扫描中暂不可退出
+                return true;
+            } else {
+                if (isScaned) {
+                    setResult(1001);
+                    finish();
+                    return true;
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**

@@ -173,6 +173,10 @@ public class MusicSingleFragment extends BaseFragment {
                     mAdapter.setNowPlayingSongId(item.getSongId());
                     mAdapter.notifyDataSetChanged();
                     break;
+                case EventCode.EVENT_MUSIC_SCANNED_INFORMATION:
+                    mProgressLayout.showProgress();
+                    mModelFetch.getData();
+                    break;
             }
         }
     }
